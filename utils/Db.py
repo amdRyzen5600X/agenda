@@ -68,7 +68,7 @@ def format_dict_to_leadreboard(chat: Chat, counter: int) -> str:
     for user in users[:10]:
         res = f'{res}{user["username"]}: {user["count"]}\n'
 
-    res = f'{res}\n--------\n<strong>До сообщения с агитацией: <i>{50 - counter}</i></strong>'
+    res = f'{res}\n--------\n<strong>До сообщения с агитацией: <i>{15 - counter}</i></strong>'
 
     return res
 
