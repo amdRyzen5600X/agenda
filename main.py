@@ -29,28 +29,34 @@ async def start_bot():
 async def send_an_agenda(msg: types.Message) -> None:
     global counter
     counter += 1
-    Db.increase_count(db, msg)
-    Db.save_changes(db, "db.json")
-    text = """
-    <strong>Мерей Абдикарим</strong>, студентка группы SE-2201, баллотируется на пост <strong>президента Студенческого правительства.</strong> В своей студенческой жизни Мерей занимает различные роли – от старосты и ментора первокурсников до админа Телеграм-каналов AITU Science и члена AITUSA.
+    try:
+        Db.increase_count(db, msg)
+        Db.save_changes(db, "db.json")
+        text = """
+<strong>Мерей Абдикарим</strong>, студентка группы SE-2201, баллотируется на пост <strong>президента Студенческого правительства.</strong> В своей студенческой жизни Мерей занимает различные роли – от старосты и ментора первокурсников до админа Телеграм-каналов AITU Science и члена AITUSA.
 
 <strong>Подпишитесь на канал Мерей and stay tuned! https://t.me/Mereysstuff</strong>
-    """
-    if counter == 15:
-        irm = InlineKeyboardMarkup()
-        irm.insert(InlineKeyboardButton(text='🫰Узнать подробнее🫰', url="https://t.me/Mereysstuff"))
-        await msg.reply(text, parse_mode='html', reply_markup=irm)
-        counter = 0
+        """
+        if counter == 15:
+            irm = InlineKeyboardMarkup()
+            irm.insert(InlineKeyboardButton(text='🫰Узнать подробнее🫰', url="https://t.me/Mereysstuff"))
+            await msg.reply(text, parse_mode='html', reply_markup=irm)
+            counter = 0
+    except TypeError:
+        return
 
 async def send_leaderboard(msg: types.Message) -> None:
-    chatstat = db.get(str(msg.chat.shifted_id))
-    if chatstat is None:
-        text = "в данном чате ещё никто не использовал агитацию"
-        await msg.reply(text)
+    try:
+        chatstat = db.get(str(msg.chat.shifted_id))
+        if chatstat is None:
+            text = "в данном чате ещё никто не использовал агитацию"
+            await msg.reply(text)
 
-    text = Db.format_dict_to_leadreboard(db.get(str(msg.chat.shifted_id)), counter)
+        text = Db.format_dict_to_leadreboard(db.get(str(msg.chat.shifted_id)), counter)
 
-    await msg.reply(text, parse_mode='html')
+        await msg.reply(text, parse_mode='html')
+    except TypeError:
+        return
 
 async def set_commands(bot: Bot):
     commands = [
